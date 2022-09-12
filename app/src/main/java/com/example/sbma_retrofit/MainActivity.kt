@@ -3,25 +3,31 @@ package com.example.sbma_retrofit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.sbma_retrofit.ui.theme.SBMA_RetrofitTheme
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
+import java.net.URL
+
+
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -38,6 +44,11 @@ fun PresidentList() {
     var selectedIndex by remember{ mutableStateOf(-1)}
 
     Column(Modifier.fillMaxSize()) {
+
+        if(selectedIndex != -1){
+            ShowPresidentHits(presidents[selectedIndex])
+        }
+
         LazyColumn(state = listState){
             items(presidents){ president ->
                 Text(
@@ -58,4 +69,11 @@ fun PresidentList() {
             }
         }
     }
+}
+
+@Composable
+fun ShowPresidentHits(president: President, model: MainViewModel = viewModel()) {
+    val hits: Int? by model.presidentHits.observeAsState(null)
+    model.getHits(president)
+    Text(president.name + " hits: " + hits.toString())
 }

@@ -1,7 +1,5 @@
 package com.example.sbma_retrofit
 
-import com.example.sbma_retrofit.ui.theme.President
-
 object DataProvider {
     val presidents: MutableList<President> = java.util.ArrayList()
 
